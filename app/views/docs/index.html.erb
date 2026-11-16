@@ -12,34 +12,40 @@
     <section>
       <h2>Engines</h2>
       <table>
-        <tr><th>engine</th><th>Returns</th></tr>
-        <% @engines.each do |engine| %>
-          <tr><td><%= link_to tag.code(engine.engine_name), docs_path(engine: engine.engine_name) %></td><td><%= engine.summary %></td></tr>
-        <% end %>
+        <thead><tr><th>engine</th><th>Returns</th></tr></thead>
+        <tbody>
+          <% @engines.each do |engine| %>
+            <tr><td><%= link_to tag.code(engine.engine_name), docs_path(engine: engine.engine_name) %></td><td><%= engine.summary %></td></tr>
+          <% end %>
+        </tbody>
       </table>
     </section>
 
     <section>
       <h2>Parameters every engine takes</h2>
       <table>
-        <tr><th>Parameter</th><th>Description</th></tr>
-        <tr><td><code>engine</code></td><td>Required. One of the engines above.</td></tr>
-        <tr><td><code>api_key</code></td><td>Required outside the playground. Your private key, shown in the <%= link_to "playground", playground_path %> once you sign in. The demo is open to invited guests.</td></tr>
-        <tr><td><code>no_cache</code></td><td>An identical search from the last hour is served from storage. <code>true</code> fetches Reclame Aqui again.</td></tr>
-        <tr><td><code>async</code></td><td><code>true</code> returns at once with <code>status: "Processing"</code>. Poll <code>search_metadata.json_endpoint</code> until it is <code>Success</code> or <code>Error</code>.</td></tr>
+        <thead><tr><th>Parameter</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td><code>engine</code></td><td>Required. One of the engines above.</td></tr>
+          <tr><td><code>api_key</code></td><td>Required outside the playground. Your private key, shown in the <%= link_to "playground", playground_path %> once you sign in. The demo is open to invited guests.</td></tr>
+          <tr><td><code>no_cache</code></td><td>An identical search from the last hour is served from storage. <code>true</code> fetches Reclame Aqui again.</td></tr>
+          <tr><td><code>async</code></td><td><code>true</code> returns at once with <code>status: "Processing"</code>. Poll <code>search_metadata.json_endpoint</code> until it is <code>Success</code> or <code>Error</code>.</td></tr>
+        </tbody>
       </table>
     </section>
 
     <section>
       <h2>search_metadata</h2>
       <table>
-        <tr><th>Key</th><th>Description</th></tr>
-        <tr><td><code>id</code></td><td>Search id, used by the archive endpoint.</td></tr>
-        <tr><td><code>status</code></td><td><code>Processing</code>, <code>Success</code> or <code>Error</code>. A company or complaint that does not exist is a <code>Success</code> with an <code>error</code> key, as SerpApi reports empty results.</td></tr>
-        <tr><td><code>json_endpoint</code></td><td>This search in the archive: <code>GET /searches/:id.json</code>.</td></tr>
-        <tr><td><code>reclame_aqui_url</code></td><td>The URL that was fetched.</td></tr>
-        <tr><td><code>raw_html_file</code></td><td>The page exactly as Reclame Aqui returned it, served under a sandbox CSP.</td></tr>
-        <tr><td><code>total_time_taken</code></td><td>Seconds, fetch and parse included.</td></tr>
+        <thead><tr><th>Key</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td><code>id</code></td><td>Search id, used by the archive endpoint.</td></tr>
+          <tr><td><code>status</code></td><td><code>Processing</code>, <code>Success</code> or <code>Error</code>. A company or complaint that does not exist is a <code>Success</code> with an <code>error</code> key, as SerpApi reports empty results.</td></tr>
+          <tr><td><code>json_endpoint</code></td><td>This search in the archive: <code>GET /searches/:id.json</code>.</td></tr>
+          <tr><td><code>reclame_aqui_url</code></td><td>The URL that was fetched.</td></tr>
+          <tr><td><code>raw_html_file</code></td><td>The page exactly as Reclame Aqui returned it, served under a sandbox CSP.</td></tr>
+          <tr><td><code>total_time_taken</code></td><td>Seconds, fetch and parse included.</td></tr>
+        </tbody>
       </table>
     </section>
 

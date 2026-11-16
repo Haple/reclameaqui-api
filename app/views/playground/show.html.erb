@@ -18,14 +18,18 @@
     </div>
   </form>
 
-  <section class="pg-results">
+  <section class="pg-results" id="results" data-view="json">
     <div class="pg-bar" id="bar"><span class="muted">Pick an example, or fill in the form and press Search.</span></div>
+    <div class="pg-tabs" role="tablist" aria-label="Result">
+      <button type="button" role="tab" data-view="json" aria-selected="true">JSON</button>
+      <button type="button" role="tab" data-view="page" aria-selected="false">Reclame Aqui page</button>
+    </div>
     <div class="pg-panes">
-      <div class="pane">
-        <div class="pane-head"><span>JSON</span><span class="xray-hint">hover a key to find it on the page</span></div>
+      <div class="pane pane-json">
+        <div class="pane-head"><span>JSON</span><span class="xray-hint"><span class="hint-hover">hover a key to find it on the page</span><span class="hint-tap">tap a key to find it on the page</span></span></div>
         <div class="pane-body" id="json"><div class="empty">No search yet</div></div>
       </div>
-      <div class="pane">
+      <div class="pane pane-page">
         <div class="pane-head"><span>Reclame Aqui page</span><a id="raw-link" target="_blank" hidden>raw_html_file</a></div>
         <div class="pane-body">
           <div class="empty" id="frame-empty">The page the JSON was parsed from shows up here</div>

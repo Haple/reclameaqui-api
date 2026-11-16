@@ -26,6 +26,12 @@ const jsonPane = document.getElementById("json")
 const frame = document.getElementById("frame")
 const frameEmpty = document.getElementById("frame-empty")
 const rawLink = document.getElementById("raw-link")
+const resultsSection = document.getElementById("results")
+const viewTabs = document.querySelectorAll(".pg-tabs [data-view]")
+
+// Below this width (the CSS breakpoint) the JSON and the page take turns.
+const stacked = window.matchMedia("(max-width: 1000px)")
+let jsonScrollY = null
 
 let engine = config.engines[0]
 let results = null
@@ -98,12 +104,14 @@ async function run() {
   history.replaceState(null, "", `/playground?${params}`)
   runButton.disabled = true
   bar.replaceChildren(node("span", { class: "badge processing" }, "Searching"), node("code", { class: "request" }, `GET /search.json?${params}`))
+  showView("json")
+  if (stacked.matches) bar.scrollIntoView({ behavior: "smooth", block: "start" })
 
   try {
     const response = await fetch(`/search.json?${params}`, { headers: { Accept: "application/json" } })
     results = await response.json()
     renderBar(params, results, response.status)
-    renderJson(jsonPane, results, { onHover: xray, onLink: followApiLink })
+    renderJson(jsonPane, results, { onHover: xray, onSelect: (path) => stacked.matches && openPage(path), onLink: followApiLink })
     await showPage(results.search_metadata)
   } catch (error) {
     bar.replaceChildren(node("span", { class: "badge error" }, "Failed"), node("span", {}, error.message))
@@ -144,6 +152,26 @@ function bindCopy(button, text) {
     button.textContent = "Copied"
     setTimeout(() => { button.textContent = label }, 1500)
   })
+}
+
+// On narrow screens a tapped key opens the page at its source, and the JSON
+// tab brings the reader back to where they were.
+function openPage(path) {
+  if (resultsSection.dataset.view === "json") jsonScrollY = window.scrollY
+  showView("page")
+  window.scrollTo({ top: bar.getBoundingClientRect().bottom + window.scrollY })
+  if (path) requestAnimationFrame(() => xray(path))
+}
+
+function showJson() {
+  showView("json")
+  if (jsonScrollY !== null) window.scrollTo({ top: jsonScrollY })
+  jsonScrollY = null
+}
+
+function showView(view) {
+  resultsSection.dataset.view = view
+  viewTabs.forEach((tab) => tab.setAttribute("aria-selected", String(tab.dataset.view === view)))
 }
 
 async function showPage(metadata) {
@@ -237,6 +265,7 @@ function node(tag, attributes = {}, ...children) {
 }
 
 document.querySelectorAll("[data-copy]").forEach((button) => bindCopy(button, () => button.dataset.copy))
+viewTabs.forEach((tab) => tab.addEventListener("click", () => (tab.dataset.view === "page" ? openPage() : showJson())))
 
 form.addEventListener("submit", (event) => {
   event.preventDefault()

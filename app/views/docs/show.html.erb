@@ -14,16 +14,18 @@
     <section>
       <h2>Parameters</h2>
       <table>
-        <tr><th>Parameter</th><th>Description</th></tr>
-        <% @engine.params_spec.each do |param| %>
-          <tr>
-            <td><code><%= param.name %></code><% if param.required %><br><span class="muted" style="font-size: 12px">required</span><% end %></td>
-            <td>
-              <%= simple_code(param.description) %>
-              <% if param.default %><br><span class="muted">Default: <code><%= param.default %></code></span><% end %>
-            </td>
-          </tr>
-        <% end %>
+        <thead><tr><th>Parameter</th><th>Description</th></tr></thead>
+        <tbody>
+          <% @engine.params_spec.each do |param| %>
+            <tr>
+              <td><code><%= param.name %></code><% if param.required %><br><span class="muted" style="font-size: 12px">required</span><% end %></td>
+              <td>
+                <%= simple_code(param.description) %>
+                <% if param.default %><br><span class="muted">Default: <code><%= param.default %></code></span><% end %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
       </table>
     </section>
 

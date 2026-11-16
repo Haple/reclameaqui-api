@@ -23,7 +23,7 @@
         <%= link_to "Playground", playground_path, class: ("active" if controller_name == "playground") %>
         <%= link_to "Docs", docs_path, class: ("active" if controller_name == "docs") %>
         <%= link_to "Blog", post_path("building-a-reclame-aqui-api"), class: ("active" if controller_name == "posts") %>
-        <a href="https://github.com/serpapi/public-roadmap/issues/4590">#4590</a>
+        <a class="roadmap" href="https://github.com/serpapi/public-roadmap/issues/4590">#4590</a>
         <% if authenticated? %>
           <%= link_to "Admin", admin_path, class: ("active" if controller_name == "admin") if Current.user.admin? %>
           <%= button_to "Sign out", sign_out_path, method: :delete, class: "nav-button", title: "Signed in as #{Current.user.email}" %>

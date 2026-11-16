@@ -1,10 +1,10 @@
 // A small collapsible JSON viewer. Every row remembers its path in the
 // document (["related_companies", 2, "score"]) so the playground can map a
-// hovered key back to the element it was parsed from.
+// hovered or tapped key back to the element it was parsed from.
 
 const COLLAPSE_ARRAYS_LONGER_THAN = 6
 
-export function renderJson(container, value, { onHover, onLink } = {}) {
+export function renderJson(container, value, { onHover, onSelect, onLink } = {}) {
   const root = element("div", "json")
   appendNode(root, null, value, [], 0, true)
   container.replaceChildren(root)
@@ -16,7 +16,12 @@ export function renderJson(container, value, { onHover, onLink } = {}) {
 
   root.addEventListener("click", (event) => {
     const link = event.target.closest("a")
-    if (link && onLink && onLink(link.href)) event.preventDefault()
+    if (link) {
+      if (onLink && onLink(link.href)) event.preventDefault()
+      return
+    }
+    const row = event.target.closest(".jv-row")
+    if (row && onSelect && !event.target.closest("button")) onSelect(row.path)
   })
 }
 
