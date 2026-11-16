@@ -1,0 +1,55 @@
+<% content_for :title, "Docs · Reclame Aqui API" %>
+
+<div class="container docs">
+  <%= render "nav" %>
+
+  <div class="docs-body">
+    <h1>Getting started</h1>
+    <p class="muted" style="margin-top: 10px">Every engine answers the same way SerpApi's do: one GET request, JSON back.</p>
+
+    <div class="endpoint"><span class="method">GET</span><code><%= request.base_url %>/search.json?engine=…</code></div>
+
+    <section>
+      <h2>Engines</h2>
+      <table>
+        <tr><th>engine</th><th>Returns</th></tr>
+        <% @engines.each do |engine| %>
+          <tr><td><%= link_to tag.code(engine.engine_name), docs_path(engine: engine.engine_name) %></td><td><%= engine.summary %></td></tr>
+        <% end %>
+      </table>
+    </section>
+
+    <section>
+      <h2>Parameters every engine takes</h2>
+      <table>
+        <tr><th>Parameter</th><th>Description</th></tr>
+        <tr><td><code>engine</code></td><td>Required. One of the engines above.</td></tr>
+        <tr><td><code>no_cache</code></td><td>An identical search from the last hour is served from storage. <code>true</code> fetches Reclame Aqui again.</td></tr>
+        <tr><td><code>async</code></td><td><code>true</code> returns at once with <code>status: "Processing"</code>. Poll <code>search_metadata.json_endpoint</code> until it is <code>Success</code> or <code>Error</code>.</td></tr>
+      </table>
+    </section>
+
+    <section>
+      <h2>search_metadata</h2>
+      <table>
+        <tr><th>Key</th><th>Description</th></tr>
+        <tr><td><code>id</code></td><td>Search id, used by the archive endpoint.</td></tr>
+        <tr><td><code>status</code></td><td><code>Processing</code>, <code>Success</code> or <code>Error</code>. A company or complaint that does not exist is a <code>Success</code> with an <code>error</code> key, as SerpApi reports empty results.</td></tr>
+        <tr><td><code>json_endpoint</code></td><td>This search in the archive: <code>GET /searches/:id.json</code>.</td></tr>
+        <tr><td><code>reclame_aqui_url</code></td><td>The URL that was fetched.</td></tr>
+        <tr><td><code>raw_html_file</code></td><td>The page exactly as Reclame Aqui returned it, served under a sandbox CSP.</td></tr>
+        <tr><td><code>total_time_taken</code></td><td>Seconds, fetch and parse included.</td></tr>
+      </table>
+    </section>
+
+    <section>
+      <h2>Errors</h2>
+      <p>Invalid parameters return HTTP 400 with an <code>error</code> message, for example <code>{"error": "Missing `company_id` parameter."}</code>. Too many searches from one address return 429.</p>
+    </section>
+
+    <section>
+      <h2>Conventions</h2>
+      <p>Keys missing from the page are left out rather than sent as <code>null</code>. Scores and rates are numbers (<code>8.4</code>, <code>98.3</code>), never the site's <code>"--"</code> placeholder. Timestamps are ISO 8601 in Brasília time (<code>-03:00</code>). Every company and complaint carries an <code>api_link</code> to the next request.</p>
+    </section>
+  </div>
+</div>

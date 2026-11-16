@@ -1,0 +1,38 @@
+<div class="container">
+  <div class="hero">
+    <div>
+      <h1>Reclame Aqui, as JSON.</h1>
+      <p>
+        An unofficial, SerpApi-style API for Brazil's largest complaint site: company reputation for every period,
+        complaints, company answers and consumer ratings. Built as a working prototype for
+        <a href="https://github.com/serpapi/public-roadmap/issues/4590">SerpApi public roadmap #4590</a>.
+      </p>
+      <div class="actions">
+        <%= link_to "Open the playground", playground_path(engine: "reclame_aqui_company", company_id: "nubank"), class: "button" %>
+        <%= link_to "Docs", docs_path, class: "button secondary" %>
+        <%= link_to "How it was built", post_path("building-a-reclame-aqui-api"), class: "button secondary" %>
+      </div>
+    </div>
+    <div>
+      <pre><code>curl "<%= @example_url %>"</code></pre>
+      <pre style="margin-top: 10px"><code><%= JSON.pretty_generate(@example) %></code></pre>
+    </div>
+  </div>
+
+  <div class="engines">
+    <% @engines.each do |engine| %>
+      <%= link_to docs_path(engine: engine.engine_name), class: "engine-card" do %>
+        <code>engine=<%= engine.engine_name %></code>
+        <h3 style="margin-top: 6px"><%= engine.title %></h3>
+        <p><%= engine.summary %></p>
+      <% end %>
+    <% end %>
+  </div>
+
+  <div class="facts">
+    <div class="fact"><strong>~2 s</strong><span>per live search, through Cloudflare Browser Rendering</span></div>
+    <div class="fact"><strong>5 periods</strong><span>of reputation from one page fetch, including the tabs the HTML never renders</span></div>
+    <div class="fact"><strong><%= Dir[DocsExample::FIXTURES.join("**/*.html")].size %> real pages</strong><span>captured as fixtures, from RA1000 to Não recomendada</span></div>
+    <div class="fact"><strong>1 hour</strong><span>cache for identical searches, like SerpApi</span></div>
+  </div>
+</div>

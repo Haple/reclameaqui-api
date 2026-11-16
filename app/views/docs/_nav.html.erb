@@ -1,0 +1,8 @@
+<nav class="docs-nav">
+  <span class="group">Overview</span>
+  <%= link_to "Getting started", docs_path, class: ("active" if @engine.nil?) %>
+  <span class="group">Engines</span>
+  <% @engines.each do |engine| %>
+    <%= link_to engine.title.delete_prefix("Reclame Aqui "), docs_path(engine: engine.engine_name), class: ("active" if engine == @engine) %>
+  <% end %>
+</nav>

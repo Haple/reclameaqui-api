@@ -1,0 +1,5 @@
+<% content_for :title, "#{@title} · Reclame Aqui API" %>
+
+<article class="prose">
+  <%= sanitize @html, tags: %w[h1 h2 h3 h4 p a ul ol li pre code blockquote table thead tbody tr th td strong em del hr br img], attributes: %w[href src alt title id] %>
+</article>

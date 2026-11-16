@@ -1,0 +1,37 @@
+<% content_for :title, "#{@engine.title} · Reclame Aqui API" %>
+
+<div class="container docs">
+  <%= render "nav" %>
+
+  <div class="docs-body">
+    <h1><%= @engine.title %></h1>
+    <p class="muted" style="margin-top: 10px"><%= @engine.summary %></p>
+    <div class="endpoint">
+      <span class="method">GET</span><code>/search.json?engine=<%= @engine.engine_name %></code>
+      <%= link_to "Try it", playground_path(DocsExample.params(@engine.engine_name)), class: "button secondary" %>
+    </div>
+
+    <section>
+      <h2>Parameters</h2>
+      <table>
+        <tr><th>Parameter</th><th>Description</th></tr>
+        <% @engine.params_spec.each do |param| %>
+          <tr>
+            <td><code><%= param.name %></code><% if param.required %><br><span class="muted" style="font-size: 12px">required</span><% end %></td>
+            <td>
+              <%= simple_code(param.description) %>
+              <% if param.default %><br><span class="muted">Default: <code><%= param.default %></code></span><% end %>
+            </td>
+          </tr>
+        <% end %>
+      </table>
+    </section>
+
+    <section>
+      <h2>Example</h2>
+      <pre><code>curl "<%= @example_url %>"</code></pre>
+      <p class="muted" style="margin-top: 10px">Response, generated from a captured page by the same parser the API runs:</p>
+      <pre class="example"><code><%= JSON.pretty_generate(@example) %></code></pre>
+    </section>
+  </div>
+</div>

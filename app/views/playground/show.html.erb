@@ -1,0 +1,33 @@
+<% content_for :title, "Playground · Reclame Aqui API" %>
+
+<div class="playground" id="playground" data-config="<%= @config.to_json %>">
+  <form class="pg-form" id="pg-form" novalidate>
+    <div class="engine-tabs" id="engine-tabs" role="group" aria-label="Engine"></div>
+    <div id="fields" class="fields"></div>
+    <div class="field">
+      <label>examples</label>
+      <div class="examples" id="examples"></div>
+    </div>
+    <label class="check"><input type="checkbox" name="no_cache" value="true"> <code>no_cache</code></label>
+    <button class="button" type="submit" id="run">Search</button>
+  </form>
+
+  <section class="pg-results">
+    <div class="pg-bar" id="bar"><span class="muted">Pick an example, or fill in the form and press Search.</span></div>
+    <div class="pg-panes">
+      <div class="pane">
+        <div class="pane-head"><span>JSON</span><span class="xray-hint">hover a key to find it on the page</span></div>
+        <div class="pane-body" id="json"><div class="empty">No search yet</div></div>
+      </div>
+      <div class="pane">
+        <div class="pane-head"><span>Reclame Aqui page</span><a id="raw-link" target="_blank" hidden>raw_html_file</a></div>
+        <div class="pane-body">
+          <div class="empty" id="frame-empty">The page the JSON was parsed from shows up here</div>
+          <iframe id="frame" sandbox="allow-same-origin" title="Reclame Aqui page" hidden></iframe>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<%= javascript_import_module_tag "playground" %>
