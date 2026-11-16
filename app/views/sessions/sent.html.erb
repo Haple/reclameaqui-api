@@ -1,0 +1,16 @@
+<% content_for :title, "Check your inbox · Reclame Aqui API" %>
+
+<div class="container auth">
+  <h1>Check your inbox</h1>
+  <p>
+    If <%= flash[:email] ? tag.strong(flash[:email]) : "your address" %> is on the guest list, a sign-in link is on its way.
+    It works once, for <%= SignInRequest::LIFETIME.in_minutes.to_i %> minutes.
+  </p>
+  <% if flash[:dev_link] %>
+    <p class="notice">Development: emails aren't sent. <%= link_to "Open the link", flash[:dev_link] %>.</p>
+  <% end %>
+  <% if Rails.configuration.x.contact_email.present? %>
+    <p class="muted small">Nothing after a few minutes? Check spam, or write to <%= mail_to Rails.configuration.x.contact_email %>.</p>
+  <% end %>
+  <p class="muted small"><%= link_to "Use another address", sign_in_path %></p>
+</div>

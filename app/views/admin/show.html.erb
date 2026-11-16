@@ -1,0 +1,88 @@
+<% content_for :title, "Admin · Reclame Aqui API" %>
+<% content_for :head do %><meta http-equiv="refresh" content="60"><% end %>
+
+<div class="container admin">
+  <h1>Admin</h1>
+  <p class="muted">Times in Brasília. Refreshes every minute. Guests are managed with <code>bin/rails guests:add</code>, <code>guests:remove</code> and <code>guests:list</code>.</p>
+
+  <section>
+    <h2>Guest list</h2>
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th>Entry</th><th>Role</th><th>Added</th></tr></thead>
+        <tbody>
+          <% @guests.each do |guest| %>
+            <tr>
+              <td><code><%= guest.pattern %></code><% if guest.domain? %> <span class="muted">anyone at this domain</span><% end %></td>
+              <td><%= guest.admin ? "admin" : "guest" %></td>
+              <td><%= brasilia(guest.created_at) %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <h2>People</h2>
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th>Email</th><th>First sign-in</th><th>Last seen</th><th>Searches</th><th>Access</th></tr></thead>
+        <tbody>
+          <% @users.each do |user| %>
+            <tr>
+              <td><%= user.email %></td>
+              <td><%= brasilia(user.created_at) %></td>
+              <td><%= brasilia(user.last_seen_at) %></td>
+              <td><%= @search_counts.fetch(user.id, 0) %></td>
+              <td><%= user.guest? ? "yes" : tag.span("removed", class: "muted") %></td>
+            </tr>
+          <% end %>
+          <% if @users.empty? %><tr><td colspan="5" class="muted">Nobody has signed in yet.</td></tr><% end %>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <h2>Sign-in requests</h2>
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th>When</th><th>Email</th><th>Result</th><th>IP</th></tr></thead>
+        <tbody>
+          <% @sign_in_requests.each do |sign_in_request| %>
+            <tr>
+              <td><%= brasilia(sign_in_request.created_at) %></td>
+              <td><%= sign_in_request.email %></td>
+              <td><span class="badge <%= { "used" => "success", "refused" => "error" }.fetch(sign_in_request.status, "processing") %>"><%= sign_in_request.status %></span></td>
+              <td class="muted"><%= sign_in_request.ip_address %></td>
+            </tr>
+          <% end %>
+          <% if @sign_in_requests.empty? %><tr><td colspan="4" class="muted">No requests yet.</td></tr><% end %>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <h2>Searches</h2>
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th>When</th><th>Who</th><th>Search</th><th>Status</th><th>Time</th></tr></thead>
+        <tbody>
+          <% @search_requests.each do |search_request| %>
+            <% search = search_request.search %>
+            <tr>
+              <td><%= brasilia(search_request.created_at) %></td>
+              <td><%= search_request.user&.email %><% if search_request.via == "api_key" %> <span class="muted">api_key</span><% end %></td>
+              <td class="wrap"><%= link_to search_request.parameters.to_query, archived_search_path(search_request.search_id, format: :json), class: "mono" %></td>
+              <td><span class="badge <%= search&.status.to_s.downcase %>"><%= search&.status %></span><% if search_request.cached %> <span class="muted">cached</span><% end %></td>
+              <td><%= search && search.timings["total_ms"] ? "#{(search.timings['total_ms'] / 1000.0).round(1)} s" : "" %></td>
+            </tr>
+          <% end %>
+          <% if @search_requests.empty? %><tr><td colspan="5" class="muted">No searches yet.</td></tr><% end %>
+        </tbody>
+      </table>
+    </div>
+  </section>
+</div>

@@ -5,7 +5,7 @@ An unofficial, SerpApi-style API for [Reclame Aqui](https://www.reclameaqui.com.
 One GET request returns a company's reputation for every period, its complaints, the company's answers and the consumers' ratings, as JSON in the same layout SerpApi uses.
 
 ```
-GET /search.json?engine=reclame_aqui_company&company_id=nubank
+GET /search.json?engine=reclame_aqui_company&company_id=nubank&api_key=...
 ```
 
 ```json
@@ -47,7 +47,24 @@ GET /search.json?engine=reclame_aqui_company&company_id=nubank
 | `reclame_aqui_complaints` | `company_id`, `filter`, `q`, `category_id`, `product_id`, `problem_id`, `start`, `num` | Complaints with the site's tabs as filters, keyword search, facets and pagination |
 | `reclame_aqui_complaint` | `company_id`, `complaint_id` | The full complaint, the company's answers, the consumer's final consideration and rating, similar complaints |
 
-Every engine also takes `no_cache` and `async`. `GET /searches/:id.json` is the archive, and `GET /searches/:id.html` returns the stored page. The full reference is at `/docs`, and `/playground` runs searches next to the page they were parsed from. Hovering a JSON key there outlines its source element.
+Every engine also takes `api_key`, `no_cache` and `async`. `GET /searches/:id.json` is the archive, and `GET /searches/:id.html` returns the stored page. The full reference is at `/docs`, and `/playground` runs searches next to the page they were parsed from. Hovering a JSON key there outlines its source element.
+
+## Access
+
+The home page, docs and blog post are public. The playground and the live API are for invited guests, because every uncached search spends browser time.
+
+- **Sign-in** is passwordless: a guest enters their email and gets a link that works once, for 15 minutes. Opening the link shows a button and only the POST spends it, so mail scanners that prefetch links can't use it up. Only a SHA-256 digest of the token is stored. The session cookie is signed and lasts 30 days.
+- **The guest list** holds addresses or whole domains. It is checked on every request, so removing an entry locks its guests out at once. Addresses that aren't on it get the same "check your inbox" page and no email.
+- **API keys.** Each guest gets a 64-character `api_key`, shown in the playground, for curl or their own code. It never enters `search_parameters` or the cache key.
+- **Admin.** `/admin` shows the guest list, who signed in, who asked for a link and was refused, and every search with who ran it.
+
+```sh
+bin/rails "guests:add[ana@example.com]"         # one address
+bin/rails "guests:add[@example.com]"            # everyone at a domain
+bin/rails "guests:add[you@example.com,admin]"   # can open /admin
+bin/rails "guests:remove[ana@example.com]"
+bin/rails guests:list
+```
 
 ## How it works
 
@@ -66,6 +83,7 @@ app/scrapers/reclame_aqui/
   parsers/           one parser per page type, pure functions over fixtures
   engines/           parameters, URLs, api_links and X-Ray selectors per engine
 app/services/        SearchRunner (cache, fetch, parse, store), ApiLinks, previews
+app/controllers/concerns/authentication.rb   sign-in by emailed link, sessions, api_key
 spec/fixtures/       18 real responses, captured 2026-11-16
 ```
 
@@ -81,12 +99,21 @@ export MONGODB_URI=mongodb://127.0.0.1:27017/reclameaqui_api_development   # opt
 bin/rails server
 ```
 
+In development, sign-in emails aren't sent and the "check your inbox" page links to the sign-in link instead. Production also needs:
+
 ```sh
-bundle exec rspec               # 60 specs on the captured pages, no network
+export APP_HOST=reclameaqui.example.com          # the only host served
+export MAIL_FROM="Your Name <demo@example.com>"
+export SMTP_PASSWORD=...                         # a Resend API key; SMTP_ADDRESS etc. override Resend
+export CONTACT_EMAIL=hello@example.com           # optional: shown to people who aren't on the guest list
+```
+
+```sh
+bundle exec rspec               # 84 specs on the captured pages, no network
 bin/rails reclame_aqui:smoke    # one live search per engine
 ```
 
-`DAILY_LIVE_SEARCH_LIMIT` (default 300) caps uncached searches per day, and each IP gets 30 searches per 10 minutes.
+`DAILY_LIVE_SEARCH_LIMIT` (default 300) caps uncached searches per day, each guest gets 30 searches per 10 minutes, and each IP 10 sign-in requests per 10 minutes.
 
 ## Not affiliated
 

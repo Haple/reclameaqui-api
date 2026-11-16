@@ -1,4 +1,6 @@
 class PagesController < ApplicationController
+  allow_unauthenticated_access
+
   def home
     links = ApiLinks.new(request.base_url)
     @engines = ReclameAqui::Engines.all

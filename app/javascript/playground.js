@@ -120,8 +120,30 @@ function renderBar(params, data, httpStatus) {
   if (data.error) items.push(node("span", { class: "muted" }, data.error))
   if (httpStatus >= 400 && !metadata.status) items.push(node("span", { class: "muted" }, `HTTP ${httpStatus}`))
   items.push(node("code", { class: "request" }, `GET /search.json?${params}`))
+  items.push(copyButton("Copy curl", () => curlCommand(params)))
   if (metadata.json_endpoint) items.push(node("a", { href: metadata.json_endpoint, target: "_blank" }, "json_endpoint"))
   bar.replaceChildren(...items)
+}
+
+function curlCommand(params) {
+  const url = new URL(`/search.json?${params}`, location.origin)
+  url.searchParams.set("api_key", config.api_key)
+  return `curl "${url}"`
+}
+
+function copyButton(label, text) {
+  const button = node("button", { type: "button", class: "copy" }, label)
+  bindCopy(button, text)
+  return button
+}
+
+function bindCopy(button, text) {
+  const label = button.textContent
+  button.addEventListener("click", async () => {
+    await navigator.clipboard.writeText(text())
+    button.textContent = "Copied"
+    setTimeout(() => { button.textContent = label }, 1500)
+  })
 }
 
 async function showPage(metadata) {
@@ -213,6 +235,8 @@ function node(tag, attributes = {}, ...children) {
   element.append(...children)
   return element
 }
+
+document.querySelectorAll("[data-copy]").forEach((button) => bindCopy(button, () => button.dataset.copy))
 
 form.addEventListener("submit", (event) => {
   event.preventDefault()

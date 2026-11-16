@@ -24,6 +24,7 @@
       <table>
         <tr><th>Parameter</th><th>Description</th></tr>
         <tr><td><code>engine</code></td><td>Required. One of the engines above.</td></tr>
+        <tr><td><code>api_key</code></td><td>Required outside the playground. Your private key, shown in the <%= link_to "playground", playground_path %> once you sign in. The demo is open to invited guests.</td></tr>
         <tr><td><code>no_cache</code></td><td>An identical search from the last hour is served from storage. <code>true</code> fetches Reclame Aqui again.</td></tr>
         <tr><td><code>async</code></td><td><code>true</code> returns at once with <code>status: "Processing"</code>. Poll <code>search_metadata.json_endpoint</code> until it is <code>Success</code> or <code>Error</code>.</td></tr>
       </table>
@@ -44,7 +45,7 @@
 
     <section>
       <h2>Errors</h2>
-      <p>Invalid parameters return HTTP 400 with an <code>error</code> message, for example <code>{"error": "Missing `company_id` parameter."}</code>. Too many searches from one address return 429.</p>
+      <p>Invalid parameters return HTTP 400 with an <code>error</code> message, for example <code>{"error": "Missing `company_id` parameter."}</code>. A missing or unknown <code>api_key</code> returns 401, and more than 30 searches in 10 minutes from one guest return 429.</p>
     </section>
 
     <section>

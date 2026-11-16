@@ -3,6 +3,8 @@ require "rails_helper"
 RSpec.describe "GET /search.json" do
   include ActiveJob::TestHelper
 
+  before { sign_in }
+
   let(:company_url) { "https://www.reclameaqui.com.br/empresa/assistcard/" }
   let(:complaints_url) { "https://iosearch.reclameaqui.com.br/raichu-io-site-search-v1/query/companyComplains/10/0?company=29260" }
 

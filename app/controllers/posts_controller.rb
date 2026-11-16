@@ -1,4 +1,6 @@
 class PostsController < ApplicationController
+  allow_unauthenticated_access
+
   POSTS = Rails.root.join("content/posts")
 
   def show

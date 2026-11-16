@@ -29,7 +29,7 @@
 
     <section>
       <h2>Example</h2>
-      <pre><code>curl "<%= @example_url %>"</code></pre>
+      <pre><code>curl "<%= @example_url %>&amp;api_key=<%= example_api_key %>"</code></pre>
       <p class="muted" style="margin-top: 10px">Response, generated from a captured page by the same parser the API runs:</p>
       <pre class="example"><code><%= JSON.pretty_generate(@example) %></code></pre>
     </section>

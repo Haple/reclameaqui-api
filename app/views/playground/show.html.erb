@@ -10,6 +10,12 @@
     </div>
     <label class="check"><input type="checkbox" name="no_cache" value="true"> <code>no_cache</code></label>
     <button class="button" type="submit" id="run">Search</button>
+
+    <div class="field api-key">
+      <label>api_key</label>
+      <div class="key-row"><code><%= Current.user.api_key %></code><button type="button" class="copy" data-copy="<%= Current.user.api_key %>">Copy</button></div>
+      <div class="hint">Signed in as <%= Current.user.email %>. Add <code>api_key</code> to a request to call the API from curl or your own code.</div>
+    </div>
   </form>
 
   <section class="pg-results">

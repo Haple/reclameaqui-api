@@ -3,8 +3,8 @@ class SearchesController < ApplicationController
   # access, styles and images still load from Reclame Aqui.
   RAW_CSP = "sandbox; default-src 'none'; style-src https: 'unsafe-inline'; img-src https: data:; font-src https: data:".freeze
 
-  rate_limit to: 30, within: 10.minutes, only: :run,
-    with: -> { render json: { error: "Too many searches from this address. Try again in a few minutes." }, status: :too_many_requests }
+  rate_limit to: 30, within: 10.minutes, only: :run, by: -> { Current.user.id.to_s },
+    with: -> { render json: { error: "Too many searches. Try again in a few minutes." }, status: :too_many_requests }
 
   rescue_from Mongoid::Errors::DocumentNotFound, BSON::Error::InvalidObjectId do
     render json: { error: "Search not found." }, status: :not_found
@@ -14,6 +14,7 @@ class SearchesController < ApplicationController
   def run
     engine = ReclameAqui::Engines.build(request.query_parameters)
     search = SearchRunner.new.call(engine, no_cache: flag?(:no_cache), async: flag?(:async))
+    SearchRequest.record(search, user: Current.user, via: Current.session ? "browser" : "api_key")
 
     respond_to do |format|
       format.json { render json: SearchPresenter.new(search, links) }

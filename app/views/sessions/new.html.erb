@@ -1,0 +1,18 @@
+<% content_for :title, "Sign in · Reclame Aqui API" %>
+
+<div class="container auth">
+  <h1>Sign in</h1>
+  <p class="muted">The playground and the live API are open to invited guests. Enter your email and you'll get a link to sign in.</p>
+
+  <% if flash[:alert] %><p class="notice error"><%= flash[:alert] %></p><% end %>
+
+  <%= form_with url: sign_in_path, class: "auth-form" do |form| %>
+    <%= form.email_field :email, required: true, autofocus: true, autocomplete: "email", placeholder: "you@company.com", "aria-label": "Email" %>
+    <%= form.submit "Email me a link", class: "button" %>
+  <% end %>
+
+  <% if Rails.configuration.x.contact_email.present? %>
+    <p class="muted small">Not on the guest list? Write to <%= mail_to Rails.configuration.x.contact_email %>.</p>
+  <% end %>
+  <p class="muted small">The <%= link_to "docs", docs_path %> and the <%= link_to "blog post", post_path("building-a-reclame-aqui-api") %> are open to everyone.</p>
+</div>

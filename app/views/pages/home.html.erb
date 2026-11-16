@@ -14,7 +14,7 @@
       </div>
     </div>
     <div>
-      <pre><code>curl "<%= @example_url %>"</code></pre>
+      <pre><code>curl "<%= @example_url %>&amp;api_key=<%= example_api_key %>"</code></pre>
       <pre style="margin-top: 10px"><code><%= JSON.pretty_generate(@example) %></code></pre>
     </div>
   </div>

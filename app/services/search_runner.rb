@@ -15,7 +15,7 @@ class SearchRunner
     parameters = engine.search_parameters
     fingerprint = Search.fingerprint_for(parameters)
     cached = Search.cached(fingerprint) unless no_cache
-    return cached if cached
+    return cached.tap { |search| search.from_cache = true } if cached
 
     if Search.created_since(24.hours.ago).count >= DAILY_LIVE_LIMIT
       raise BudgetExceeded, "Daily live search limit reached. Searches run in the last hour are still served from cache."

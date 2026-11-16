@@ -23,6 +23,13 @@ class Search
 
   scope :created_since, ->(time) { where(:created_at.gte => time) }
 
+  # Set by SearchRunner when the search came out of the cache.
+  attr_writer :from_cache
+
+  def from_cache?
+    @from_cache || false
+  end
+
   def self.fingerprint_for(parameters)
     Digest::SHA256.hexdigest(parameters.sort.to_h.to_json)
   end

@@ -12,6 +12,7 @@ class PlaygroundController < ApplicationController
 
   def show
     @config = {
+      api_key: Current.user.api_key,
       engines: ReclameAqui::Engines.all.map do |engine|
         {
           name: engine.engine_name,

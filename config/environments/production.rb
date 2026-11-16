@@ -53,12 +53,21 @@ Rails.application.configure do
   # the I18n.default_locale when a translation cannot be found).
   config.i18n.fallbacks = true
 
-  # Enable DNS rebinding protection and other `Host` header attacks.
-  # config.hosts = [
-  #   "example.com",     # Allow requests from example.com
-  #   /.*\.example\.com/ # Allow requests from subdomains like `www.example.com`
-  # ]
-  #
-  # Skip DNS rebinding protection for the default health check endpoint.
-  # config.host_authorization = { exclude: ->(request) { request.path == "/up" } }
+  # Sign-in links go out by SMTP; Resend's settings are the defaults, with the
+  # API key as the password.
+  config.action_mailer.delivery_method = :smtp
+  config.action_mailer.raise_delivery_errors = true
+  config.action_mailer.default_url_options = { host: ENV.fetch("APP_HOST", "example.com"), protocol: "https" }
+  config.action_mailer.smtp_settings = {
+    address: ENV.fetch("SMTP_ADDRESS", "smtp.resend.com"),
+    port: ENV.fetch("SMTP_PORT", 465).to_i,
+    user_name: ENV.fetch("SMTP_USERNAME", "resend"),
+    password: ENV["SMTP_PASSWORD"],
+    tls: true
+  }
+
+  # Enable DNS rebinding protection and other `Host` header attacks: only the
+  # demo's host is served. The health check stays open for local probes.
+  config.hosts = [ ENV.fetch("APP_HOST", "example.com") ]
+  config.host_authorization = { exclude: ->(request) { request.path == "/up" } }
 end

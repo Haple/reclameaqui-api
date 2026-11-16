@@ -1,4 +1,6 @@
 class DocsController < ApplicationController
+  allow_unauthenticated_access
+
   def show
     @engines = ReclameAqui::Engines.all
     @links = ApiLinks.new(request.base_url)

@@ -1,0 +1,16 @@
+<% content_for :title, "Sign in · Reclame Aqui API" %>
+
+<div class="container auth">
+  <% if @sign_in_request %>
+    <h1>Sign in</h1>
+    <p>You're signing in as <strong><%= @sign_in_request.email %></strong>.</p>
+    <%= form_with url: sign_in_link_path, class: "auth-form" do |form| %>
+      <%= form.hidden_field :token, value: params[:token] %>
+      <%= form.submit "Sign in", class: "button" %>
+    <% end %>
+  <% else %>
+    <h1>This link has expired</h1>
+    <p class="muted">Sign-in links work once, for <%= SignInRequest::LIFETIME.in_minutes.to_i %> minutes.</p>
+    <%= link_to "Email me a new link", sign_in_path, class: "button" %>
+  <% end %>
+</div>

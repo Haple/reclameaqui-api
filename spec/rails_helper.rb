@@ -15,6 +15,11 @@ RSpec.configure do |config|
   config.filter_rails_from_backtrace!
   config.include FixtureHelpers
   config.include BrowserRenderingHelpers
+  config.include SignInHelpers, type: :request
+  config.include ActiveSupport::Testing::TimeHelpers
 
-  config.before { Mongoid.purge! }
+  config.before do
+    Mongoid.purge!
+    ActionMailer::Base.deliveries.clear
+  end
 end
